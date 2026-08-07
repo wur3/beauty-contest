@@ -41,6 +41,16 @@
   width: 100%;
 }
 
+.selection {
+  display: grid;
+  grid-template-columns: repeat(10, 1fr);
+}
+
+.selection input:first-child {
+  grid-column: 10;
+  justify-self: stretch;
+}
+
 .inputs {
   padding: 10px;
   display: flex;

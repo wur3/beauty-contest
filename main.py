@@ -28,7 +28,7 @@ def home():
         code = request.form.get("code")
         join = request.form.get("join", False)
         create = request.form.get("create", False)
-
+        # TODO: make option to join a random room
         if not name:
             return render_template("home.html", error="Please enter a name.", code=code, name=name)
 
@@ -41,7 +41,8 @@ def home():
             rooms[room] = {"members": 0, "messages": []}
         elif code not in rooms:
             return render_template("home.html", error="Room does not exist.", code=code, name=name)
-        
+        elif rooms[room]["members"] > 5:
+            return render_template("home.html", error="Room is full.", code=code, name=name)
         session["room"] = room
         session["name"] = name
         return redirect(url_for("room"))

@@ -1,25 +1,31 @@
 {% extends 'base.html' %} {% block content %}
 <div class="message-box">
-  <h2>Chat Room: {{code}}</h2>
-  <div class="messages" id="messages"></div>
-  <div class="inputs">
-    <input
-      type="text"
-      rows="3"
-      placeholder="Message"
-      name="message"
-      id="message"
-    />
-    <button type="button" name="send" id="send-btn" onClick="sendMessage()">
-      Send
-    </button>
-  </div>
+  <h2>Room: {{code}}</h2>
+  <div class="selection" id="selection"></div>
+  <div class="logs" id="logs"></div>
 </div>
 <script type="text/javascript">
   var socketio = io();
+  var canSelect = true;
 
-  const messages = document.getElementById("messages");
+  // generates number selection section
+  const selection = document.getElementById("selection");
+  const createButton = (val) => {
+    const button = `
+        <input type="button" value="${val}" onClick="sendMessage(${val})"></button>
+    `;
+    selection.innerHTML += button;
+  };
 
+  // TODO: make this neatly aligned so its
+  //                             0
+  //  1  2  3  4  5  6  7  8  9 10
+  // 11 12 13 14 15 16 17 18 19 20
+  // ...
+  Array(101).keys().forEach(v => createButton(v));
+
+  // generates logs section
+  const logs = document.getElementById("logs");
   const createMessage = (name, msg) => {
     const content = `
     <div class="text">
@@ -31,18 +37,19 @@
         </span>
     </div>
     `;
-    messages.innerHTML += content;
+    logs.innerHTML += content;
   };
 
   socketio.on("message", (data) => {
     createMessage(data.name, data.message);
   });
 
-  const sendMessage = () => {
-    const message = document.getElementById("message");
-    if (message.value == "") return;
-    socketio.emit("message", { data: message.value });
-    message.value = "";
+  const sendMessage = (num) => {
+    if (canSelect) {
+      console.log(num);
+      socketio.emit("message", { data: num });
+      canSelect = false;
+    }
   };
 </script>
 {% for msg in messages %}
