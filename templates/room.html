@@ -1,6 +1,7 @@
 {% extends 'base.html' %} {% block content %}
 <div class="message-box">
-  <h2>Room: {{code}}</h2>
+  <h3>Room: {{code}}</h3>
+  <h1 id="selected-value">&nbsp;</h1>
   <div class="selection" id="selection"></div>
   <div class="logs" id="logs"></div>
 </div>
@@ -46,7 +47,7 @@
 
   const sendMessage = (num) => {
     if (canSelect) {
-      console.log(num);
+      document.getElementById("selected-value").innerText = `${num}`;
       socketio.emit("message", { data: num });
       canSelect = false;
     }
