@@ -22,6 +22,10 @@
   width: 100%;
 }
 
+.join-random-btn {
+  width: 100%;
+}
+
 .message-box {
   border-color: black;
   border-width: 2px;

@@ -1,9 +1,15 @@
 {% extends 'base.html' %} {% block content %}
 <div class="message-box">
   <h3>Room: {{code}}</h3>
+  <h3>c: {{choice}}</h3>
   <h1 id="selected-value">&nbsp;</h1>
   <div class="selection" id="selection"></div>
   <div class="logs" id="logs"></div>
+  <ul class="choices" id="choices">
+    {% for m in members %}
+    <li id="choice-{{m.name}}">{{m.name}}: {{m.choice}}</li>
+    {% endfor %}
+  </ul>
 </div>
 <script type="text/javascript">
   var socketio = io();
@@ -52,3 +58,4 @@
   createMessage("{{msg.name}}", "{{msg.message}}");
 </script>
 {% endfor %} {% endblock %}
+<script
