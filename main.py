@@ -44,7 +44,7 @@ def home():
         code = request.form.get("code")
         join = request.form.get("join", False)
         create = request.form.get("create", False)
-        joinRandom = request.form.get("random", False)
+        joinRandom = request.form.get("joinRandom", False)
 
         if not name:
             return render_template("home.html", error="Please enter a name.", code=code, name=name)
@@ -59,7 +59,7 @@ def home():
             elif len(rooms[code]["members"]) > 5:
                 return render_template("home.html", error="Room is full.", code=code, name=name)
         elif joinRandom != False:
-            code = filter(lambda r: len(r["members"]) < 5, rooms).next()
+            code = next(filter(lambda r: len(r[1]["members"]) < 5, rooms.items()))[0]
         session["room"] = code
         session["name"] = name
         rooms[code]["members"][name] = (Player(name))
@@ -73,9 +73,7 @@ def room():
     choice = session.get("choice")
     if room is None or session.get("name") is None or room not in rooms:
         return redirect(url_for("home"))
-    # TODO: refactor?
-    room_data = rooms[room]
-    return render_template("room.html", code=room, messages=room_data["messages"], members=room_data["members"])
+    return render_template("room.html", code=room, room_data=rooms[room])
 
 @socketio.on("message")
 def message(data):
@@ -84,6 +82,7 @@ def message(data):
     if room not in rooms:
         return 
     choice = data["data"]
+    # TODO: verify this update
     rooms[room]["members"][name].choice = choice
     content = {
         "name": name,
